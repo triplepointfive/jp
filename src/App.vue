@@ -1,28 +1,33 @@
-<template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
-  </div>
+<template lang="slm">
+  #app.container-fluid
+    PickOne[
+      :kanjis='["何", "先", "円", "南"]'
+      question="なに"
+      ]
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import PickOne from './components/Lessons/PickOne'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    PickOne
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="stylus">
+html, body, .container-fluid {
+  height: 100%;
+}
+
+.container-fluid {
+  padding: 15px;
+
+  > div {
+    height: 100%;
+    text-align: center;
+  }
 }
 </style>
