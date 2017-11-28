@@ -7,7 +7,7 @@
         v-for="row in collection"
         :key="row.join()"
         ]
-        b-card.text-center.-thick[
+        b-card.text-center[
           :border-variant="pickedColor(kanji)"
           @click="pick(kanji)"
           v-for="kanji in row"
@@ -126,6 +126,18 @@ export default {
         margin-right: 5%;
         border-width: 5px;
         position: relative;
+
+        &.border-danger {
+          .custom-control-input:checked ~ .custom-control-indicator {
+            background-color: #dc3545 !important;
+          }
+        }
+
+        &.border-success {
+          .custom-control-input:checked ~ .custom-control-indicator {
+            background-color: #28a745 !important;
+          }
+        }
 
         .kanji {
           position: absolute;
