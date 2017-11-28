@@ -8,14 +8,25 @@
         :key="row.join()"
         ]
         b-card.text-center.-thick[
-          :border-variant='picked === kanji ? "success" : "dark"'
+          :border-variant='picked === kanji ? "primary" : "dark"'
           @click="picked = kanji"
           v-for="kanji in row"
           :key="kanji"
           ]
-          h1.display-1 v-text="kanji"
+          h1.kanji.display-1 v-text="kanji"
+
+          b-form-radio.picked[
+            v-model="picked"
+            :value="kanji"
+            plain
+            name="option"
+            ]
     .footer
-      b-btn.submit variant="success" Submit
+      b-btn.submit[
+        :disabled="!picked"
+        variant="success"
+        ]
+        | Submit
 </template>
 
 <script>
@@ -71,11 +82,18 @@ export default {
         border-width: 3px;
         position: relative;
 
-        > div {
+        .kanji {
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: (-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+
+        .picked {
+          position: absolute;
+          left: 0.5em;
+          bottom: 0.5em;
+          margin: 0;
         }
       }
     }
