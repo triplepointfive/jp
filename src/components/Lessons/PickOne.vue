@@ -1,15 +1,15 @@
 <template lang="slm">
   .question-node
     .head
-      h1 v-text="question"
+      h1.first-letter v-text="question"
     .body
       .line[
         v-for="row in collection"
         :key="row.join()"
         ]
         b-card.text-center.-thick[
-          :border-variant='picked === kanji ? "primary" : "dark"'
-          @click="picked = kanji"
+          :border-variant="pickedColor(kanji)"
+          @click="pick(kanji)"
           v-for="kanji in row"
           :key="kanji"
           ]
@@ -22,28 +22,67 @@
             name="option"
             ]
     .footer
-      b-btn.submit[
+      b-btn.submit.first-letter[
         :disabled="!picked"
         variant="success"
+        @click="check"
+        v-text="buttonText"
         ]
-        | Submit
 </template>
 
 <script>
 import shuffle from 'shuffle-array'
 
 export default {
-  props: ['kanjis', 'question', 'correct'],
-  data: function() {
+  props: ['kanjis', 'question', 'answer'],
+  data() {
     return {
       collection: this.buildCollection(),
-      picked: null
+      picked: null,
+      done: false,
+      correct: null
     }
   },
   methods: {
-    buildCollection: function() {
+    buildCollection() {
       let [v1, v2, v3, v4] = shuffle(this.kanjis, { copy: true })
       return [[v1, v2], [v3, v4]]
+    },
+    check() {
+      if (this.done) {
+      } else {
+        this.correct = this.answer === this.picked
+        this.done = true
+      }
+    },
+    pick(kanji) {
+      if (!this.done) {
+        this.picked = kanji
+      }
+    },
+    pickedColor(kanji) {
+      if (!this.done) {
+        return this.picked === kanji ? 'primary' : 'dark'
+      }
+
+      if (this.correct) {
+        return this.picked === kanji ? 'success' : 'dark'
+      }
+
+      if (this.picked === kanji) {
+        return 'danger'
+      }
+
+      if (this.answer === kanji) {
+        return 'success'
+      }
+
+      return 'dark'
+    }
+  },
+  computed: {
+    buttonText() {
+      return this.done ? 'next' : 'submit'
     }
   }
 }
@@ -51,6 +90,10 @@ export default {
 
 <style lang="stylus">
 .question-node {
+  .first-letter {
+    text-transform: capitalize;
+  }
+
   > .head {
     height: 10%;
     width: 100%;
@@ -79,7 +122,7 @@ export default {
         display: inline-block;
         margin-left: 5%;
         margin-right: 5%;
-        border-width: 3px;
+        border-width: 5px;
         position: relative;
 
         .kanji {

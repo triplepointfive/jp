@@ -1,10 +1,16 @@
 <template lang="slm">
   #app.container-fluid
     PickOne[
-      :kanjis='["何", "先", "円", "南"]'
-      question="なに"
+      :kanjis='["南", "北", "西", "東"]'
+      question="south"
+      answer="南"
       ]
 </template>
+
+// みなみ south
+// きた north
+// にし west
+// ひがし east
 
 <script>
 import PickOne from './components/Lessons/PickOne'
