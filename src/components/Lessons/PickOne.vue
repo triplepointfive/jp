@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import shuffle from 'shuffle-array'
+import _ from 'lodash'
 
 export default {
   props: ['kanjis', 'question', 'answer'],
@@ -45,11 +45,12 @@ export default {
   },
   methods: {
     buildCollection() {
-      let [v1, v2, v3, v4] = shuffle(this.kanjis, { copy: true })
+      let [v1, v2, v3, v4] = _.shuffle(this.kanjis, { copy: true })
       return [[v1, v2], [v3, v4]]
     },
     check() {
       if (this.done) {
+        this.$emit('done', this.correct)
       } else {
         this.correct = this.answer === this.picked
         this.done = true
@@ -61,6 +62,7 @@ export default {
       }
     },
     pickedColor(kanji) {
+      // TODO: Colorize input[type=option] as well
       if (!this.done) {
         return this.picked === kanji ? 'primary' : 'dark'
       }
