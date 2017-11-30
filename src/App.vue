@@ -1,33 +1,26 @@
 <template lang="slm">
   #app.container-fluid
+    ProgressBar
     PickOne[
       :kanjis='kanjis'
       :question='question'
       :answer='answer'
       :key="questionID"
       @done='done'
+      @track='track'
       ]
 </template>
 
 <script>
 import PickOne from './components/Lessons/PickOne'
+import ProgressBar from './components/ProgressBar'
 
-import { PickOneExercise, PickOneOption, Word } from './db'
-
-const words = [
-  new Word('南', ['south'], ['みなみ']),
-  new Word('北', ['north'], ['きた']),
-  new Word('西', ['west'], ['にし']),
-  new Word('東', ['east'], ['ひがし'])
-]
-
-const options = words.map(w => new PickOneOption(w.display(), w.meaning()))
-const picker = new PickOneExercise(options)
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'app',
   data: function() {
-    const exercize = picker.ask()
+    const exercize = this.$store.state.session.exercise()
 
     return {
       kanjis: exercize.options,
@@ -37,15 +30,24 @@ export default {
     }
   },
   components: {
-    PickOne
+    PickOne,
+    ProgressBar
   },
   methods: {
-    done(status) {
+    ...mapMutations(['sessionDone', 'sessionNext']),
+    track (status) {
+      if (status) {
+        this.sessionDone()
+      } else {
+        this.sessionNext()
+      }
+    },
+    done() {
       this.questionID += 1
       this.nextQuestion()
     },
     nextQuestion() {
-      const exercize = picker.ask()
+      const exercize = this.$store.state.session.exercise()
 
       this.kanjis = exercize.options
       this.question = exercize.question

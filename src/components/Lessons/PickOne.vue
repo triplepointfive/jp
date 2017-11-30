@@ -3,24 +3,27 @@
     .head
       h1.first-letter v-text="question"
     .body
-      .line[
+      b-row[
         v-for="row in collection"
         :key="row.join()"
         ]
-        b-card.text-center[
-          :border-variant="pickedColor(kanji)"
-          @click="pick(kanji)"
+        b-col[
+          cols="6"
           v-for="kanji in row"
           :key="kanji"
           ]
-          h1.kanji.display-1 v-text="kanji"
-
-          b-form-radio.picked[
-            v-model="picked"
-            :value="kanji"
-            plain
-            name="option"
+          b-card.text-center[
+            :border-variant="pickedColor(kanji)"
+            @click="pick(kanji)"
             ]
+            h1.kanji.display-1 v-text="kanji"
+
+            b-form-radio.picked[
+              v-model="picked"
+              :value="kanji"
+              plain
+              name="option"
+              ]
     .footer
       b-btn.submit.first-letter[
         :disabled="!picked"
@@ -50,10 +53,11 @@ export default {
     },
     check() {
       if (this.done) {
-        this.$emit('done', this.correct)
+        this.$emit('done')
       } else {
         this.correct = this.answer === this.picked
         this.done = true
+        this.$emit('track', this.correct)
       }
     },
     pick(kanji) {
@@ -114,17 +118,15 @@ export default {
     height: 80%;
     width: 100%;
 
-    > .line {
+    > .row {
       height: 40%;
       margin-bottom: 10%;
 
-      > .card {
-        width: 40%;
+      .card {
+        width: 100%;
         height: 100%;
         display: inline-block;
-        margin-left: 5%;
-        margin-right: 5%;
-        border-width: 5px;
+        border-width: 2px;
         position: relative;
 
         &.border-danger {

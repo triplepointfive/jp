@@ -9,16 +9,34 @@ import Vuex from 'vuex'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import { Word, Lesson, Builder, Session } from './db'
+
 Vue.use(BootstrapVue)
 Vue.use(Vuex)
 
 Vue.config.productionTip = false
 
+const words = [
+  new Word('南', ['south'], ['みなみ']),
+  new Word('北', ['north'], ['きた']),
+  new Word('西', ['west'], ['にし']),
+  new Word('東', ['east'], ['ひがし'])
+]
+
+const lessons = {
+  compass: new Lesson([ Builder.pickOneExercises(words) ])
+}
+
 const store = new Vuex.Store({
   state: {
-    words: []
+    session: new Session(lessons.compass),
+    db: {
+      lessons
+    }
   },
   mutations: {
+    sessionDone (state) { state.session.success() },
+    sessionNext (state) { state.session.next() }
   }
 })
 

@@ -16,6 +16,10 @@ export class Word {
     this.readings = readings
   }
 
+  toPickOneOption() {
+    return new PickOneOption(this.display(), [this.meaning(), this.reading()])
+  }
+
   display() {
     return this.kanjis
   }
@@ -31,31 +35,81 @@ export class Word {
 
 class Exercise {
   constructor(type) {
-    this.status = 'pending'
     this.type = type
   }
 }
 
 export class PickOneOption {
-  constructor(display, question) {
+  constructor(display, questions) {
     this.display = display
-    this.question = question
+    this.questions = questions
   }
 }
 
 export class PickOneExercise extends Exercise {
-  constructor(options) {
+  constructor(options, question, answer) {
     super('PickOne')
     this.options = options
+    this.question = question
+    this.answer = answer
+  }
+}
+
+export class Builder {
+  static pickOneExercises (options) {
+    const pickOptions = options.map(o => o.toPickOneOption())
+    const displayOptions = pickOptions.map(o => o.display)
+
+    let exercises = []
+
+    // TODO: concat map
+    pickOptions.forEach((o) => {
+      o.questions.forEach((q) => {
+        exercises.push(
+          new PickOneExercise(
+            displayOptions,
+            q,
+            o.display
+          )
+        )
+      })
+    })
+
+    return exercises
+  }
+}
+
+export class Lesson {
+  constructor(exercises) {
+    this.exercises = _.flatten(exercises)
+  }
+}
+
+export class Session {
+  constructor(lesson) {
+    this.exercises = _.shuffle(lesson.exercises)
+
+    this.total = this.exercises.length
+
+    this.done = 0
   }
 
-  ask() {
-    let answer = _.sample(this.options)
+  next () {
+    const exerciseToRepeat = this.exercises.shift()
+    this.exercises.push(exerciseToRepeat)
+    return this.exercise()
+  }
 
-    return {
-      options: this.options.map(o => o.display),
-      question: answer.question,
-      answer: answer.display
-    }
+  success () {
+    this.exercises.shift()
+    this.done += 1
+  }
+
+  completed () {
+    return this.done === this.total
+  }
+
+  exercise () {
+    return this.exercises[0]
   }
 }
